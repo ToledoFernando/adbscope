@@ -29,13 +29,6 @@ ADBScope es una sola herramienta para ese ciclo: conectá (por USB o WiFi) uno o
 - **Tema claro / oscuro / sistema.**
 - **Barra de título propia, sin marco nativo** — sin la barra de título de Windows; la app dibuja la suya.
 
-## DEMO
-
-<!-- <video src="demo/demo-alpha-0-1.mp4" controls width="50%"></video> -->
-<video controls width="50%">
-  <source src="./demo/demo-alpha-0-1.mp4" type="video/mp4">
-</video>
-
 ## Cómo está construida
 
 ### Stack
