@@ -1,0 +1,191 @@
+{
+  "common": {
+    "close": "Close",
+    "save": "Save"
+  },
+  "titleBar": {
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "restore": "Restore",
+    "close": "Close"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "theme": "Theme",
+    "themeOptions": {
+      "system": "System",
+      "light": "Light",
+      "dark": "Dark"
+    }
+  },
+  "appShell": {
+    "devices": "Devices"
+  },
+  "deviceList": {
+    "loading": "Loading devices…",
+    "empty": "No devices connected"
+  },
+  "deviceListItem": {
+    "options": "Device options",
+    "edit": "Edit",
+    "disconnect": "Disconnect",
+    "delete": "Delete",
+    "resetName": "Reset name",
+    "renameTitle": "Rename device",
+    "disconnectedToast": "Disconnected {{device}}",
+    "removedToast": "Removed {{device}}",
+    "transport": {
+      "usb": "USB",
+      "wifi": "WiFi",
+      "emulator": "Emulator"
+    }
+  },
+  "connectDialog": {
+    "trigger": "+ Connect",
+    "title": "Connect a device",
+    "description": "USB devices are detected automatically. WiFi devices need to connect manually.",
+    "tabUsb": "USB",
+    "tabWifi": "WiFi",
+    "usbHint": "Plug the device in and enable USB debugging. It'll show up in the device list automatically.",
+    "pairHint": "Android 11+: Developer options → Wireless debugging → Pair device with pairing code. Use the IP/port from that screen (not the main one) — they're different.",
+    "ipAddress": "IP Address",
+    "port": "Port",
+    "pairingCode": "Pairing code",
+    "pair": "Pair",
+    "pairing": "Pairing…",
+    "restartServer": "Pairing failing? Restart adb server",
+    "restartingServer": "Restarting adb server…",
+    "connectHint": "Already paired (or on older Android)? Connect using the IP/port from the main Wireless debugging screen.",
+    "connect": "Connect",
+    "connecting": "Connecting…",
+    "errors": {
+      "fillPairFields": "Fill in IP, port and pairing code",
+      "enterIp": "Enter a device IP address"
+    },
+    "toasts": {
+      "paired": "Paired — now connect using the port from the Wireless debugging screen",
+      "serverRestarted": "adb server restarted",
+      "connected": "Connected to {{address}}"
+    }
+  },
+  "workspace": {
+    "selectDevice": "Select a device to get started",
+    "overview": "Overview",
+    "screen": "Screen",
+    "shell": "Shell",
+    "openConsole": "Open console",
+    "takeScreenshot": "Take screenshot",
+    "reconnect": "Reconnect",
+    "disconnect": "Disconnect",
+    "disconnectedToast": "Disconnected — screen, shell and logcat sessions stopped",
+    "refreshingToast": "Refreshing device info…"
+  },
+  "overview": {
+    "loadError": "Unable to load device info",
+    "state": {
+      "online": "Online",
+      "offline": "Disconnected",
+      "unauthorized": "Unauthorized"
+    },
+    "battery": "Battery",
+    "storage": "Storage",
+    "ram": "RAM",
+    "uptime": "Uptime",
+    "uptimeSub": "Time powered on",
+    "cores": "{{count}} cores",
+    "storageOf": "{{used}} of {{total}}",
+    "ofTotal": "of {{total}}",
+    "deviceInfo": "Device information",
+    "sections": {
+      "identification": "Identification",
+      "system": "System",
+      "hardware": "Hardware",
+      "screen": "Screen"
+    },
+    "fields": {
+      "model": "Model",
+      "manufacturer": "Manufacturer",
+      "brand": "Brand",
+      "serial": "Serial",
+      "android": "Android",
+      "sdk": "SDK",
+      "securityPatch": "Security patch",
+      "buildId": "Build ID",
+      "architecture": "Architecture",
+      "supportedAbis": "Supported ABIs",
+      "board": "Board",
+      "hardware": "Hardware",
+      "bootloader": "Bootloader",
+      "cpuCores": "CPU cores",
+      "resolution": "Resolution",
+      "density": "Density"
+    },
+    "batteryDetail": {
+      "status": "Status",
+      "health": "Health",
+      "charger": "Charger",
+      "none": "None",
+      "voltage": "Voltage",
+      "temperature": "Temperature"
+    },
+    "pieLabels": {
+      "charge": "Charge",
+      "remaining": "Remaining",
+      "used": "Used",
+      "free": "Free"
+    }
+  },
+  "shell": {
+    "promptColor": "Prompt color",
+    "colors": {
+      "green": "Green",
+      "cyan": "Cyan",
+      "yellow": "Yellow",
+      "magenta": "Magenta",
+      "blue": "Blue",
+      "white": "White"
+    }
+  },
+  "screenshot": {
+    "title": "Screenshot",
+    "save": "Save",
+    "capture": "Capture",
+    "capturing": "Capturing…"
+  },
+  "screenViewer": {
+    "starting": "Starting screen mirror…",
+    "error": "Unable to start screen mirror",
+    "disconnected": "The device disconnected. Reconnect manually once it's available again.",
+    "options": "Screen options",
+    "reconnect": "Reconnect",
+    "audioOn": "Audio on",
+    "audioOff": "Audio off"
+  },
+  "devices": {
+    "lostConnection": "Lost connection to {{device}} — its active sessions were stopped"
+  },
+  "logcat": {
+    "title": "Logcat",
+    "selectDevice": "(select a device)",
+    "search": "Search…",
+    "resume": "Resume streaming logs",
+    "pause": "Pause streaming logs",
+    "clear": "Clear all logs",
+    "showingOnly": "Showing {{level}} only — click to clear",
+    "filterTo": "Filter to {{level}}",
+    "waiting": "Waiting for logs…",
+    "noMatch": "No logs match the current filter",
+    "levels": {
+      "V": "Verbose",
+      "D": "Debug",
+      "I": "Info",
+      "W": "Warning",
+      "E": "Error",
+      "F": "Fatal"
+    }
+  },
+  "language": {
+    "label": "Language"
+  }
+}

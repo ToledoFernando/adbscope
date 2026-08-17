@@ -1,0 +1,191 @@
+{
+  "common": {
+    "close": "Cerrar",
+    "save": "Guardar"
+  },
+  "titleBar": {
+    "minimize": "Minimizar",
+    "maximize": "Maximizar",
+    "restore": "Restaurar",
+    "close": "Cerrar"
+  },
+  "settings": {
+    "title": "Configuración",
+    "language": "Lenguaje",
+    "theme": "Tema",
+    "themeOptions": {
+      "system": "Sistema",
+      "light": "Claro",
+      "dark": "Oscuro"
+    }
+  },
+  "appShell": {
+    "devices": "Dispositivos"
+  },
+  "deviceList": {
+    "loading": "Cargando dispositivos…",
+    "empty": "No hay dispositivos conectados"
+  },
+  "deviceListItem": {
+    "options": "Opciones del dispositivo",
+    "edit": "Editar",
+    "disconnect": "Desconectar",
+    "delete": "Eliminar",
+    "resetName": "Restablecer nombre",
+    "renameTitle": "Renombrar dispositivo",
+    "disconnectedToast": "{{device}} desconectado",
+    "removedToast": "{{device}} eliminado",
+    "transport": {
+      "usb": "USB",
+      "wifi": "WiFi",
+      "emulator": "Emulador"
+    }
+  },
+  "connectDialog": {
+    "trigger": "+ Conectar",
+    "title": "Conectar un dispositivo",
+    "description": "Los dispositivos USB se detectan automáticamente. Los dispositivos WiFi necesitan conectarse manualmente.",
+    "tabUsb": "USB",
+    "tabWifi": "WiFi",
+    "usbHint": "Conecta el dispositivo y activa la depuración USB. Aparecerá en la lista de dispositivos automáticamente.",
+    "pairHint": "Android 11+: Opciones de desarrollador → Depuración inalámbrica → Vincular dispositivo con código de vinculación. Usa la IP/puerto de esa pantalla (no la principal) — son diferentes.",
+    "ipAddress": "Dirección IP",
+    "port": "Puerto",
+    "pairingCode": "Código de vinculación",
+    "pair": "Vincular",
+    "pairing": "Vinculando…",
+    "restartServer": "¿Falla la vinculación? Reiniciar servidor adb",
+    "restartingServer": "Reiniciando servidor adb…",
+    "connectHint": "¿Ya vinculado (o Android más antiguo)? Conecta usando la IP/puerto de la pantalla principal de Depuración inalámbrica.",
+    "connect": "Conectar",
+    "connecting": "Conectando…",
+    "errors": {
+      "fillPairFields": "Completa IP, puerto y código de vinculación",
+      "enterIp": "Ingresa la dirección IP del dispositivo"
+    },
+    "toasts": {
+      "paired": "Vinculado — ahora conecta usando el puerto de la pantalla de Depuración inalámbrica",
+      "serverRestarted": "Servidor adb reiniciado",
+      "connected": "Conectado a {{address}}"
+    }
+  },
+  "workspace": {
+    "selectDevice": "Selecciona un dispositivo para comenzar",
+    "overview": "Resumen",
+    "screen": "Pantalla",
+    "shell": "Terminal",
+    "openConsole": "Abrir consola",
+    "takeScreenshot": "Sacar captura",
+    "reconnect": "Reconectar",
+    "disconnect": "Desconectar",
+    "disconnectedToast": "Desconectado — pantalla, terminal y sesión de logcat detenidas",
+    "refreshingToast": "Actualizando información del dispositivo…"
+  },
+  "overview": {
+    "loadError": "No se pudo cargar la información del dispositivo",
+    "state": {
+      "online": "En línea",
+      "offline": "Desconectado",
+      "unauthorized": "No autorizado"
+    },
+    "battery": "Batería",
+    "storage": "Almacenamiento",
+    "ram": "RAM",
+    "uptime": "Actividad",
+    "uptimeSub": "Tiempo encendido",
+    "cores": "{{count}} núcleos",
+    "storageOf": "{{used}} de {{total}}",
+    "ofTotal": "de {{total}}",
+    "deviceInfo": "Información del dispositivo",
+    "sections": {
+      "identification": "Identificación",
+      "system": "Sistema",
+      "hardware": "Hardware",
+      "screen": "Pantalla"
+    },
+    "fields": {
+      "model": "Modelo",
+      "manufacturer": "Fabricante",
+      "brand": "Marca",
+      "serial": "Serie",
+      "android": "Android",
+      "sdk": "SDK",
+      "securityPatch": "Parche de seguridad",
+      "buildId": "Build ID",
+      "architecture": "Arquitectura",
+      "supportedAbis": "ABIs soportadas",
+      "board": "Placa (board)",
+      "hardware": "Hardware",
+      "bootloader": "Bootloader",
+      "cpuCores": "Núcleos CPU",
+      "resolution": "Resolución",
+      "density": "Densidad"
+    },
+    "batteryDetail": {
+      "status": "Estado",
+      "health": "Salud",
+      "charger": "Cargador",
+      "none": "Ninguno",
+      "voltage": "Voltaje",
+      "temperature": "Temperatura"
+    },
+    "pieLabels": {
+      "charge": "Carga",
+      "remaining": "Restante",
+      "used": "Ocupado",
+      "free": "Libre"
+    }
+  },
+  "shell": {
+    "promptColor": "Color del prompt",
+    "colors": {
+      "green": "Verde",
+      "cyan": "Celeste",
+      "yellow": "Amarillo",
+      "magenta": "Magenta",
+      "blue": "Azul",
+      "white": "Blanco"
+    }
+  },
+  "screenshot": {
+    "title": "Captura de pantalla",
+    "save": "Guardar",
+    "capture": "Capturar",
+    "capturing": "Capturando…"
+  },
+  "screenViewer": {
+    "starting": "Iniciando espejo de pantalla…",
+    "error": "No se pudo iniciar el espejo de pantalla",
+    "disconnected": "El dispositivo se desconectó. Reconectá manualmente cuando vuelva a estar disponible.",
+    "options": "Opciones de pantalla",
+    "reconnect": "Reconectar",
+    "audioOn": "Sonido activado",
+    "audioOff": "Sonido desactivado"
+  },
+  "devices": {
+    "lostConnection": "Se perdió la conexión con {{device}} — se detuvieron sus sesiones activas"
+  },
+  "logcat": {
+    "title": "Logcat",
+    "selectDevice": "(selecciona un dispositivo)",
+    "search": "Buscar…",
+    "resume": "Reanudar transmisión de logs",
+    "pause": "Pausar transmisión de logs",
+    "clear": "Borrar todos los logs",
+    "showingOnly": "Mostrando solo {{level}} — clic para quitar",
+    "filterTo": "Filtrar por {{level}}",
+    "waiting": "Esperando logs…",
+    "noMatch": "Ningún log coincide con el filtro actual",
+    "levels": {
+      "V": "Detallado",
+      "D": "Depuración",
+      "I": "Información",
+      "W": "Advertencia",
+      "E": "Error",
+      "F": "Fatal"
+    }
+  },
+  "language": {
+    "label": "Idioma"
+  }
+}
