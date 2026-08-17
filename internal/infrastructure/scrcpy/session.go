@@ -28,9 +28,11 @@ type Session struct {
 // serial) and waits for its window to appear, ready to be embedded. audio
 // mirrors the device's audio output through scrcpy (Android 11+ only);
 // it's a launch-time flag for scrcpy, not something togglable on a
-// running session — changing it means stopping and starting again.
-func Start(ctx context.Context, deviceID, serial string, audio bool) (*Session, error) {
-	path, err := locateScrcpy()
+// running session — changing it means stopping and starting again. binDir
+// is where the app's embedded binaries were extracted to (see
+// locateScrcpy) — pass "" to skip straight to the fallback locations.
+func Start(ctx context.Context, deviceID, serial string, audio bool, binDir string) (*Session, error) {
+	path, err := locateScrcpy(binDir)
 	if err != nil {
 		return nil, fmt.Errorf("scrcpy not found: %w", err)
 	}

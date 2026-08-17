@@ -18,10 +18,12 @@ type execClient struct {
 	binPath string
 }
 
-// NewClient locates the adb binary — preferring the copy bundled alongside
-// scrcpy, falling back to PATH — and returns a Client backed by it.
-func NewClient() (Client, error) {
-	path, err := locateADB()
+// NewClient locates the adb binary — preferring the copy extracted from
+// the app's embedded binaries (binDir; pass "" to skip straight to the
+// fallbacks), falling back to a copy next to the executable or PATH —
+// and returns a Client backed by it.
+func NewClient(binDir string) (Client, error) {
+	path, err := locateADB(binDir)
 	if err != nil {
 		return nil, domain.ErrADBNotFound
 	}

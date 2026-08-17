@@ -17,13 +17,17 @@ const mainWindowTitle = "ADBScope"
 // whatever was running before.
 type Service struct {
 	client adb.Client
+	binDir string
 
 	mu      sync.Mutex
 	session *scrcpy.Session
 }
 
-func NewService(client adb.Client) *Service {
-	return &Service{client: client}
+// binDir is where the app's embedded binaries were extracted to at
+// startup (see extractBundledBinaries in app.go) — pass "" if extraction
+// failed, and scrcpy.Start falls back to its usual lookup locations.
+func NewService(client adb.Client, binDir string) *Service {
+	return &Service{client: client, binDir: binDir}
 }
 
 // Start mirrors deviceID's screen, embedded into ADBScope's own window.
@@ -45,7 +49,7 @@ func (s *Service) Start(ctx context.Context, deviceID, serial string, audio bool
 	// no-op when there's nothing stale to remove.
 	_, _ = s.client.Execute(ctx, "-s", serial, "forward", "--remove-all")
 
-	session, err := scrcpy.Start(ctx, deviceID, serial, audio)
+	session, err := scrcpy.Start(ctx, deviceID, serial, audio, s.binDir)
 	if err != nil {
 		return fmt.Errorf("%w: %s", domain.ErrScreenStreamFailed, err)
 	}

@@ -11,6 +11,15 @@ import (
 //go:embed all:frontend/dist
 var assets embed.FS
 
+// bundledBinaries carries adb.exe, scrcpy.exe, and their DLLs (scrcpy/ at
+// the repo root) inside the compiled executable, so the app ships as a
+// single file instead of needing that folder alongside it. Extracted to
+// disk on startup — see internal/infrastructure/bundled and app.go's
+// extractBundledBinaries.
+//
+//go:embed all:scrcpy
+var bundledBinaries embed.FS
+
 // App identity/window defaults. appName must be kept in sync by hand with
 // wails.json's "name"/"info.productName" and frontend/src/config.ts's
 // APP_NAME — Go, the Wails build config, and the frontend bundle are three

@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -12,6 +14,7 @@ import (
 	"myproject/internal/application/shell"
 	"myproject/internal/domain"
 	"myproject/internal/infrastructure/adb"
+	"myproject/internal/infrastructure/bundled"
 )
 
 const devicePollInterval = 1500 * time.Millisecond
@@ -35,17 +38,42 @@ func NewApp() *App {
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
 
-	client, err := adb.NewClient()
+	binDir := a.extractBundledBinaries(ctx)
+
+	client, err := adb.NewClient(binDir)
 	if err != nil {
 		runtime.LogError(ctx, err.Error())
 		return
 	}
 	a.devices = devices.NewService(client)
-	a.screen = screen.NewService(client)
+	a.screen = screen.NewService(client, binDir)
 	a.logcat = logcat.NewService(client)
 	a.shell = shell.NewService(client)
 
 	go a.watchDevices(ctx)
+}
+
+// extractBundledBinaries writes the embedded adb/scrcpy binaries (see
+// main.go's bundledBinaries) to a stable per-user cache directory, so the
+// app ships as a single executable with no companion scrcpy/ folder to
+// keep alongside it. Returns "" on failure — callers fall back to
+// locating adb/scrcpy next to the executable or on PATH (see
+// internal/infrastructure/{adb,scrcpy}/locate.go), same as before this
+// existed.
+func (a *App) extractBundledBinaries(ctx context.Context) string {
+	cacheDir, err := os.UserCacheDir()
+	if err != nil {
+		runtime.LogError(ctx, "resolving cache dir: "+err.Error())
+		return ""
+	}
+
+	destDir := filepath.Join(cacheDir, appName, "scrcpy")
+	dir, err := bundled.Extract(bundledBinaries, "scrcpy", destDir)
+	if err != nil {
+		runtime.LogError(ctx, "extracting bundled binaries: "+err.Error())
+		return ""
+	}
+	return dir
 }
 
 // shutdown stops any active screen mirror / logcat / shell session so

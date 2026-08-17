@@ -29,6 +29,10 @@ ADBScope es una sola herramienta para ese ciclo: conectá (por USB o WiFi) uno o
 - **Tema claro / oscuro / sistema.**
 - **Barra de título propia, sin marco nativo** — sin la barra de título de Windows; la app dibuja la suya.
 
+## DEMO
+
+<video src="demo/demo-alpha-0-1.mp4" controls width="50%"></video>
+
 ## Cómo está construida
 
 ### Stack
@@ -74,7 +78,7 @@ Algunas decisiones que vale la pena explicar:
 - **Solo un dispositivo está "activo" a la vez.** Los servicios de screen mirroring, shell y logcat mantienen a lo sumo una sesión corriendo cada uno; arrancar una nueva detiene la que estaba corriendo antes. Se pueden *detectar* varios dispositivos simultáneamente (la barra lateral los muestra todos), pero solo se *maneja* uno a la vez — reflejar varias pantallas y shells en simultáneo quedaba fuera del alcance de cómo se usa esta herramienta en la práctica.
 - **El espejo de pantalla es scrcpy, no una reimplementación.** En vez de escribir un decodificador H.264 y una capa de inyección de touch desde cero, ADBScope maneja el binario real de `scrcpy` y reparenta su ventana nativa dentro de la ventana de la app vía la API Win32 `SetParent` (`internal/infrastructure/scrcpy/window_windows.go`). El costo: es una ventana nativa de verdad, no parte del compositing de la superficie del navegador — así que siempre se renderiza por encima del contenido web sin importar el z-index de CSS (el problema del "airspace"). ADBScope resuelve ese caso puntual ocultando la ventana del espejo cada vez que se abre un dialog/dropdown/menú de Radix (detectado de forma genérica vía el atributo `data-scroll-locked` de `react-remove-scroll`) y mostrándola de nuevo cuando el overlay se cierra.
 - **La shell corre a través de una pseudo-consola real, no un pipe.** La primera implementación canalizaba el stdin/stdout de `adb shell` por pipes de sistema operativo comunes, lo que reveló un bug real: el buffering propio de la salida de `adb.exe` se comporta distinto según esté conectado a una consola o no, y el síntoma era que la salida de un comando solo aparecía después de la *siguiente* tecla presionada. Cambiar a [`go-pty`](https://github.com/aymanbagabas/go-pty), que asigna una ConPTY real de Windows para el proceso hijo, lo arregló — `adb` ahora ve algo que parece una terminal de verdad, igual que si hubieras tipeado `adb shell` vos mismo.
-- **adb y scrcpy vienen empaquetados, no se asume que estén instalados.** `internal/infrastructure/{adb,scrcpy}/locate.go` buscan los binarios primero al lado del ejecutable en ejecución (`scrcpy/adb.exe`, `scrcpy/scrcpy.exe` — incluidos en la carpeta `scrcpy/` de este mismo repo), y si no los encuentran, caen al `PATH`. `wails build` copia esa carpeta a `build/bin/` automáticamente (ver el hook `frontend:build` en `wails.json` y `scripts/copy-scrcpy.mjs`), así que la app compilada no requiere tener instalados el Android SDK ni scrcpy por separado.
+- **adb y scrcpy viajan embebidos dentro del propio ejecutable.** La carpeta `scrcpy/` del repo (adb.exe, scrcpy.exe y sus DLLs, ~35MB) se incluye en el binario vía `//go:embed` (`main.go`) y se extrae a una carpeta de caché del usuario (`%LocalAppData%\ADBScope\scrcpy`) la primera vez que arranca la app — solo una vez, no en cada inicio, gracias a un fingerprint de los archivos embebidos (`internal/infrastructure/bundled`). El resultado: `wails build` produce un único `.exe`, sin carpeta al lado que distribuir por separado, y sin depender de que el usuario tenga el Android SDK o scrcpy instalados. Si la extracción fallara por algún motivo, `locate.go` cae de vuelta a buscar al lado del ejecutable o en el `PATH`.
 - **No parpadean ventanas de consola.** Cada proceso de `adb`/`scrcpy` que se lanza se hace con `HideWindow` activado en Windows — si no, con los dispositivos sondeándose cada 1.5s, una ventana de consola aparecería y desaparecería todo el tiempo.
 
 ### Internacionalización
@@ -100,8 +104,7 @@ adbview/
 │   │   ├── components/layout/  # AppShell, TitleBar
 │   │   └── i18n/                # locales y configuración
 │   └── wailsjs/                # bindings Go↔JS autogenerados (no editar a mano)
-├── scrcpy/                   # adb.exe, scrcpy.exe y sus DLLs incluidos
-└── scripts/                  # helpers de empaquetado para el build
+└── scrcpy/                   # adb.exe, scrcpy.exe y sus DLLs — embebidos en el build, ver arriba
 ```
 
 ## Cómo empezar
@@ -112,14 +115,15 @@ adbview/
 # instala dependencias del frontend + arranca la app en modo dev (hot reload)
 wails dev
 
-# compila un binario de producción — adb/scrcpy se empaquetan automáticamente
+# compila un binario de producción — adb/scrcpy quedan embebidos adentro
 wails build
 ```
 
-El resultado del build queda en `build/bin/`: el ejecutable de la app más una carpeta `scrcpy/` al lado. Hay que distribuir ambos juntos.
+El resultado del build es un único archivo: `build/bin/ADBScope.exe`. No hay nada más que distribuir junto.
 
 ## Limitaciones actuales
 
+- **El ejecutable pesa ~50MB.** La mayor parte es `SDL3.dll`, embebida junto con el resto de `scrcpy/` para que el build sea un solo archivo — ver [Arquitectura](#arquitectura).
 - **Solo Windows.** El embebido de pantalla usa APIs Win32 directamente, y la shell usa ConPTY de Windows — ambas cosas específicas de la plataforma a propósito, todavía no abstraídas detrás de una interfaz para otros sistemas operativos.
 - **Un solo dispositivo activo a la vez.** La detección y la barra lateral son multi-dispositivo; las sesiones en vivo de pantalla/shell/logcat no.
 - **El resize de la shell remota no se propaga.** La terminal local se reacomoda, pero no se le avisa el nuevo tamaño a la PTY remota, así que apps TUI a pantalla completa (`vim`, `htop`) pueden renderizar asumiendo las dimensiones equivocadas.
