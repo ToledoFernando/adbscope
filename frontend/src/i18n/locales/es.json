@@ -137,6 +137,7 @@
     }
   },
   "shell": {
+    "consoleLabel": "Consola",
     "promptColor": "Color del prompt",
     "colors": {
       "green": "Verde",
@@ -154,6 +155,7 @@
     "capturing": "Capturando…"
   },
   "screenViewer": {
+    "monitorLabel": "Monitor de pantalla",
     "starting": "Iniciando espejo de pantalla…",
     "error": "No se pudo iniciar el espejo de pantalla",
     "disconnected": "El dispositivo se desconectó. Reconectá manualmente cuando vuelva a estar disponible.",

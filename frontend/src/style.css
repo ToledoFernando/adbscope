@@ -4,87 +4,112 @@
 @custom-variant dark (&:is(.dark *));
 
 @font-face {
-    font-family: "Nunito";
-    font-style: normal;
-    font-weight: 400;
-    src: local(""),
-    url("assets/fonts/nunito-v16-latin-regular.woff2") format("woff2");
+  font-family: "IBM Plex Sans Variable";
+  font-style: normal;
+  font-weight: 100 700;
+  font-display: swap;
+  src: url("assets/fonts/ibm-plex-sans-variable.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "JetBrains Mono Variable";
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: swap;
+  src: url("assets/fonts/jetbrains-mono-variable.woff2") format("woff2");
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --radius: 0.25rem;
+
+  /* Panel-steel neutrals — dark is the home rendition of the Operations Deck. */
+  --void: oklch(0.16 0.012 240);
+  --panel: oklch(0.205 0.012 240);
+  --panel-raised: oklch(0.255 0.012 240);
+  --panel-sunken: oklch(0.175 0.012 240);
+  --hairline: oklch(0.32 0.014 240);
+  --hairline-strong: oklch(0.42 0.016 240);
+  --ink: oklch(0.94 0.006 240);
+  --ink-muted: oklch(0.68 0.014 240);
+  --ink-faint: oklch(0.46 0.014 240);
+
+  /* State-only accents. Never used decoratively. */
+  --state-online: oklch(0.8 0.19 152);
+  --state-warning: oklch(0.79 0.16 75);
+  --state-fault: oklch(0.66 0.21 15);
+  --state-live: oklch(0.78 0.13 200);
+
+  --background: var(--void);
+  --foreground: var(--ink);
+  --card: var(--panel);
+  --card-foreground: var(--ink);
+  --popover: var(--panel-raised);
+  --popover-foreground: var(--ink);
+  --primary: var(--state-live);
+  --primary-foreground: var(--void);
+  --secondary: var(--panel-raised);
+  --secondary-foreground: var(--ink);
+  --muted: var(--panel);
+  --muted-foreground: var(--ink-muted);
+  --accent: var(--panel-raised);
+  --accent-foreground: var(--ink);
+  --destructive: var(--state-fault);
+  --border: var(--hairline);
+  --input: var(--panel-sunken);
+  --ring: var(--state-live);
+  --chart-1: var(--state-live);
+  --chart-2: var(--state-online);
+  --chart-3: var(--state-warning);
+  --chart-4: var(--hairline-strong);
+  --chart-5: var(--ink-faint);
+  --sidebar: var(--panel);
+  --sidebar-foreground: var(--ink);
+  --sidebar-primary: var(--state-live);
+  --sidebar-primary-foreground: var(--void);
+  --sidebar-accent: var(--panel-raised);
+  --sidebar-accent-foreground: var(--ink);
+  --sidebar-border: var(--hairline);
+  --sidebar-ring: var(--state-live);
 }
 
+/* Daylight ops room — same grammar, inverted panel tones. Not a color-flip afterthought. */
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --void: oklch(0.16 0.012 240);
+  --panel: oklch(0.205 0.012 240);
+  --panel-raised: oklch(0.255 0.012 240);
+  --panel-sunken: oklch(0.175 0.012 240);
+  --hairline: oklch(0.32 0.014 240);
+  --hairline-strong: oklch(0.42 0.016 240);
+  --ink: oklch(0.94 0.006 240);
+  --ink-muted: oklch(0.68 0.014 240);
+  --ink-faint: oklch(0.46 0.014 240);
+  --state-online: oklch(0.8 0.19 152);
+  --state-warning: oklch(0.79 0.16 75);
+  --state-fault: oklch(0.66 0.21 15);
+  --state-live: oklch(0.78 0.13 200);
+}
+
+:root:not(.dark) {
+  --void: oklch(0.95 0.004 240);
+  --panel: oklch(1 0 0);
+  --panel-raised: oklch(0.975 0.005 240);
+  --panel-sunken: oklch(0.925 0.006 240);
+  --hairline: oklch(0.87 0.008 240);
+  --hairline-strong: oklch(0.76 0.012 240);
+  --ink: oklch(0.2 0.012 240);
+  --ink-muted: oklch(0.42 0.014 240);
+  --ink-faint: oklch(0.62 0.012 240);
+  --state-online: oklch(0.6 0.16 152);
+  --state-warning: oklch(0.62 0.15 75);
+  --state-fault: oklch(0.56 0.2 15);
+  --state-live: oklch(0.52 0.12 210);
 }
 
 @theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --radius-sm: 3px;
+  --radius-md: 4px;
+  --radius-lg: 4px;
+  --radius-xl: 6px;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -116,7 +141,30 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  --font-sans: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
+
+  /* Operations Deck surfaces + state colors, exposed as Tailwind utilities
+     (bg-void, bg-panel-raised, text-state-online, border-hairline-strong, ...). */
+  --color-void: var(--void);
+  --color-panel: var(--panel);
+  --color-panel-raised: var(--panel-raised);
+  --color-panel-sunken: var(--panel-sunken);
+  --color-hairline: var(--hairline);
+  --color-hairline-strong: var(--hairline-strong);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-faint: var(--ink-faint);
+  --color-state-online: var(--state-online);
+  --color-state-warning: var(--state-warning);
+  --color-state-fault: var(--state-fault);
+  --color-state-live: var(--state-live);
+
+  --font-sans: "IBM Plex Sans Variable", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono Variable", "Cascadia Mono", "Cascadia Code", Consolas, monospace;
+}
+
+* {
+  scrollbar-width: thin; 
+  scrollbar-color: var(--border) var(--color-background);
 }
 
 @layer base {
@@ -126,5 +174,65 @@
   body {
     @apply bg-background text-foreground font-sans;
     margin: 0;
+    font-feature-settings: "tnum" 1, "cv05" 1;
   }
+  ::selection {
+    background: var(--state-live);
+    color: var(--void);
+  }
+}
+
+@layer utilities {
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Status LED pulse — the only looping animation in the system, reserved
+     for a device/session that is genuinely live right now. */
+  @keyframes led-pulse {
+    0%, 100% {
+      box-shadow: 0 0 0 0 color-mix(in oklch, var(--state-online) 55%, transparent);
+    }
+    50% {
+      box-shadow: 0 0 0 4px color-mix(in oklch, var(--state-online) 0%, transparent);
+    }
+  }
+  .animate-led-pulse {
+    animation: led-pulse 2s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-led-pulse {
+      animation: none;
+    }
+  }
+}
+
+/* Sonner toasts routed through the Operations Deck palette instead of its
+   default light/rich-color theme — an alert on this rack reads as a status
+   tile, not a rounded SaaS snackbar. */
+[data-sonner-toaster] {
+  --normal-bg: var(--panel-raised) !important;
+  --normal-border: var(--hairline-strong) !important;
+  --normal-text: var(--ink) !important;
+  --success-bg: var(--panel-raised) !important;
+  --success-border: var(--state-online) !important;
+  --success-text: var(--ink) !important;
+  --error-bg: var(--panel-raised) !important;
+  --error-border: var(--state-fault) !important;
+  --error-text: var(--ink) !important;
+  --warning-bg: var(--panel-raised) !important;
+  --warning-border: var(--state-warning) !important;
+  --warning-text: var(--ink) !important;
+  --info-bg: var(--panel-raised) !important;
+  --info-border: var(--state-live) !important;
+  --info-text: var(--ink) !important;
+  font-family: var(--font-sans);
+}
+[data-sonner-toast] {
+  border-radius: var(--radius-md) !important;
+  font-size: 13px !important;
+}
+[data-sonner-toast] [data-title] {
+  font-weight: 500 !important;
 }

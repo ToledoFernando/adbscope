@@ -4,13 +4,25 @@ import {useTranslation} from 'react-i18next'
 import {cn} from '@/lib/utils'
 import type {LogEntry, LogLevel} from '../types'
 
-const levelColors: Record<LogLevel, string> = {
-  V: 'text-muted-foreground',
-  D: 'text-muted-foreground',
-  I: 'text-foreground',
-  W: 'text-amber-500',
-  E: 'text-red-500',
-  F: 'text-red-500',
+// Severity reads as a colored left rail + level glyph, never a full-row
+// wash — a noisy app's stream stays scannable instead of turning into a
+// wall of red (see DESIGN.md's State-Only Rule).
+const levelRailColors: Record<LogLevel, string> = {
+  V: 'border-transparent',
+  D: 'border-transparent',
+  I: 'border-state-online/50',
+  W: 'border-state-warning',
+  E: 'border-state-fault',
+  F: 'border-state-fault',
+}
+
+const levelGlyphColors: Record<LogLevel, string> = {
+  V: 'text-ink-faint',
+  D: 'text-ink-muted',
+  I: 'text-state-online',
+  W: 'text-state-warning',
+  E: 'text-state-fault',
+  F: 'text-state-fault',
 }
 
 interface LogcatListProps {
@@ -72,14 +84,18 @@ export function LogcatList({entries, search, levelFilter}: LogcatListProps) {
                 height: row.size,
                 transform: `translateY(${row.start}px)`,
               }}
-              className={cn('flex items-center gap-2 truncate px-3', levelColors[entry.Level])}
+              className={cn(
+                'flex items-center gap-2 truncate border-l-2 pr-3 pl-2.5',
+                levelRailColors[entry.Level],
+                entry.Level === 'V' && 'opacity-60',
+              )}
             >
-              <span className="shrink-0 text-muted-foreground">
+              <span className="shrink-0 text-ink-faint">
                 {new Date(entry.Timestamp).toLocaleTimeString()}
               </span>
-              <span className="w-3 shrink-0 font-semibold">{entry.Level}</span>
-              <span className="shrink-0 max-w-[12rem] truncate text-muted-foreground">{entry.Tag}</span>
-              <span className="truncate">{entry.Message}</span>
+              <span className={cn('w-3 shrink-0 font-semibold', levelGlyphColors[entry.Level])}>{entry.Level}</span>
+              <span className="shrink-0 max-w-[12rem] truncate text-ink-muted">{entry.Tag}</span>
+              <span className="truncate text-ink">{entry.Message}</span>
             </div>
           )
         })}

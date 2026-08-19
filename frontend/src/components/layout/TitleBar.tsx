@@ -1,5 +1,5 @@
 import {type CSSProperties, type ReactNode, useEffect, useState} from 'react'
-import {Copy, Minus, Smartphone, Square, X} from 'lucide-react'
+import {Copy, Minus, Square, X} from 'lucide-react'
 import {useTranslation} from 'react-i18next'
 import {cn} from '@/lib/utils'
 import {
@@ -40,13 +40,15 @@ export function TitleBar({leftContent}: TitleBarProps) {
     <div
       style={dragRegion}
       onDoubleClick={() => WindowToggleMaximise()}
-      className="flex h-9 shrink-0 select-none items-center justify-between border-b border-border bg-background"
+      className="flex h-9 shrink-0 select-none items-center justify-between border-b border-hairline bg-panel"
     >
-      <div style={noDragRegion} className="flex items-center gap-3">
-        <div className="flex items-center gap-1.5">
+      <div style={noDragRegion} className="flex items-center gap-3 pl-1">
+        <div className="flex items-center gap-2">
           <SettingsModal />
-          {/* <Smartphone className="h-4 w-4 text-primary" /> */}
-          <span className="text-xs font-semibold">{APP_NAME}</span>
+          <span className="size-1.5 rounded-full bg-state-live" aria-hidden />
+          <span className="font-mono text-[11px] font-medium tracking-[0.08em] text-ink uppercase">
+            {APP_NAME}
+          </span>
         </div>
         {leftContent}
       </div>
@@ -56,7 +58,7 @@ export function TitleBar({leftContent}: TitleBarProps) {
           type="button"
           aria-label={t('titleBar.minimize')}
           onClick={() => WindowMinimise()}
-          className="flex h-full w-11 items-center justify-center text-muted-foreground hover:bg-accent hover:text-foreground"
+          className="flex h-full w-11 items-center justify-center text-ink-muted hover:bg-panel-raised hover:text-foreground"
         >
           <Minus className="h-4 w-4" />
         </button>
@@ -67,7 +69,7 @@ export function TitleBar({leftContent}: TitleBarProps) {
             await WindowToggleMaximise()
             setIsMaximised(await WindowIsMaximised())
           }}
-          className="flex h-full w-11 items-center justify-center text-muted-foreground hover:bg-accent hover:text-foreground"
+          className="flex h-full w-11 items-center justify-center text-ink-muted hover:bg-panel-raised hover:text-foreground"
         >
           {isMaximised ? <Copy className="h-3.5 w-3.5 -scale-x-100" /> : <Square className="h-3.5 w-3.5" />}
         </button>
@@ -76,8 +78,8 @@ export function TitleBar({leftContent}: TitleBarProps) {
           aria-label={t('titleBar.close')}
           onClick={() => Quit()}
           className={cn(
-            'flex h-full w-11 items-center justify-center text-muted-foreground',
-            'hover:bg-destructive hover:text-white',
+            'flex h-full w-11 items-center justify-center text-ink-muted',
+            'hover:bg-state-fault hover:text-void',
           )}
         >
           <X className="h-4 w-4" />

@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { MoreVertical, Pencil, PowerOff, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -29,9 +31,9 @@ import {
 import { useDeviceStore } from "../store";
 
 const stateDotStyles: Record<string, string> = {
-  online: "bg-emerald-500",
-  offline: "bg-muted-foreground",
-  unauthorized: "bg-amber-500",
+  online: "bg-state-online animate-led-pulse",
+  offline: "bg-ink-faint",
+  unauthorized: "bg-state-warning",
 };
 
 interface DeviceListItemProps {
@@ -114,17 +116,43 @@ export function DeviceListItem({
     setRenameOpen(false);
   }
 
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  // A device tile mounts once per device joining the rack (React key =
+  // device.ID), so this fires exactly on "a device just showed up" — a
+  // quick channel-strip power-on, not a re-render tic.
+  useGSAP(
+    () => {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      gsap.from(rootRef.current, {
+        opacity: 0,
+        y: -6,
+        duration: 0.32,
+        ease: "power2.out",
+      });
+    },
+    { scope: rootRef },
+  );
+
   return (
     <div
+      ref={rootRef}
       role="button"
       tabIndex={0}
       onClick={onSelect}
       onKeyDown={(e) => e.key === "Enter" && onSelect()}
       className={cn(
-        "group flex w-full flex-col gap-1 rounded-md px-3 py-2 text-left text-sm transition-colors hover:bg-accent",
-        selected && "bg-accent",
+        "group relative flex w-full flex-col gap-1.5 border-b border-hairline py-2 pr-2 pl-3 text-left text-sm transition-colors hover:bg-panel-raised",
+        selected && "bg-panel-raised",
       )}
     >
+      <span
+        className={cn(
+          "absolute inset-y-0 left-0 w-0.5 bg-state-live transition-opacity",
+          selected ? "opacity-100" : "opacity-0",
+        )}
+        aria-hidden
+      />
       <div className="flex w-full items-center gap-2">
         <span
           className={cn(
@@ -137,7 +165,7 @@ export function DeviceListItem({
         </span>
 
         <DropdownMenu>
-          <DropdownMenuTrigger>
+          <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
               size="icon-xs"
@@ -171,11 +199,11 @@ export function DeviceListItem({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="flex items-center gap-2 pl-4 text-xs text-muted-foreground">
-        <Badge variant={device.Transport === "wifi" ? "default" : "secondary"} className="px-1.5 py-0 text-[10px]">
+      <div className="flex items-center gap-2 pl-4">
+        <Badge variant={device.Transport === "wifi" ? "default" : "secondary"} className="py-0">
           {transportLabels[device.Transport] ?? device.Transport}
         </Badge>
-        <span className="truncate">{device.Serial}</span>
+        <span className="truncate font-mono text-xs text-ink-faint">{device.Serial}</span>
       </div>
 
       <Dialog open={renameOpen} onOpenChange={setRenameOpen}>

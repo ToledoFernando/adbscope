@@ -137,6 +137,7 @@
     }
   },
   "shell": {
+    "consoleLabel": "Console",
     "promptColor": "Prompt color",
     "colors": {
       "green": "Green",
@@ -154,6 +155,7 @@
     "capturing": "Capturing…"
   },
   "screenViewer": {
+    "monitorLabel": "Screen monitor",
     "starting": "Starting screen mirror…",
     "error": "Unable to start screen mirror",
     "disconnected": "The device disconnected. Reconnect manually once it's available again.",
