@@ -19,6 +19,8 @@ import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { SUPPORTED_LANGUAGES } from "@/i18n";
 import { useThemeStore, type Theme } from "../store";
+import { useCapturePathsStore } from "../capturePathsStore";
+import { DirectoryPathField } from "./DirectoryPathField";
 
 const THEME_OPTIONS: { value: Theme; icon: typeof Monitor }[] = [
   { value: "system", icon: Monitor },
@@ -30,6 +32,10 @@ function Content() {
   const { t, i18n } = useTranslation();
   const theme = useThemeStore((s) => s.theme);
   const setTheme = useThemeStore((s) => s.setTheme);
+  const recordingsDir = useCapturePathsStore((s) => s.recordingsDir);
+  const setRecordingsDir = useCapturePathsStore((s) => s.setRecordingsDir);
+  const screenshotsDir = useCapturePathsStore((s) => s.screenshotsDir);
+  const setScreenshotsDir = useCapturePathsStore((s) => s.setScreenshotsDir);
 
   return (
     <>
@@ -84,6 +90,22 @@ function Content() {
         </div>
 
         <Separator className="my-4" />
+
+        <p className="mb-2 text-sm text-muted-foreground">{t("settings.captures")}</p>
+        <div className="flex flex-col gap-4">
+          <DirectoryPathField
+            label={t("settings.recordingsFolder")}
+            value={recordingsDir}
+            onChange={setRecordingsDir}
+            dialogTitle={t("settings.recordingsFolder")}
+          />
+          <DirectoryPathField
+            label={t("settings.screenshotsFolder")}
+            value={screenshotsDir}
+            onChange={setScreenshotsDir}
+            dialogTitle={t("settings.screenshotsFolder")}
+          />
+        </div>
       </div>
       <DialogFooter>
         <DialogClose asChild>

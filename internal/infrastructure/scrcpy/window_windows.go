@@ -32,9 +32,11 @@ var (
 	procOpenProcess      = kernel32.NewProc("OpenProcess")
 	procTerminateProcess = kernel32.NewProc("TerminateProcess")
 	procCloseHandle      = kernel32.NewProc("CloseHandle")
+	procPostMessageW     = user32.NewProc("PostMessageW")
 )
 
 const processTerminate = 0x0001
+const wmClose = 0x0010
 
 // GWL_STYLE (-16). Can't be a uintptr constant directly (Go rejects
 // negative-to-unsigned constant conversions), so it goes through a typed
@@ -76,6 +78,17 @@ func findWindowByTitle(title string) (windowHandle, bool) {
 // own top-level window and us reparenting it into ours.
 func hideWindow(hwnd windowHandle) {
 	procShowWindow.Call(uintptr(hwnd), swHide)
+}
+
+// closeWindow asks a window to close via WM_CLOSE — the same message it
+// gets when a user clicks its own titlebar X button. Used instead of an
+// immediate process kill so scrcpy runs its normal shutdown path, which is
+// what lets it finalize an in-progress --record file (an mp4 muxer writes
+// its trailer on clean close; a hard kill truncates it into a broken
+// file). See Session.Stop, which falls back to a hard kill if this
+// doesn't make the process exit in time.
+func closeWindow(hwnd windowHandle) {
+	procPostMessageW.Call(uintptr(hwnd), wmClose, 0, 0)
 }
 
 // setWindowVisible shows or hides an already-embedded window without

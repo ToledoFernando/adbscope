@@ -40,7 +40,9 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "./components/ui/dropdown-menu";
-import { takeScreenshot } from "./features/devices/api";
+import { buildScreenshotPath, chooseScreenshotPath, saveScreenshot } from "./features/devices/api";
+import { useCapturePathsStore } from "./features/Settings/capturePathsStore";
+import NotDeviceSelected from "./NotDeviceSelected";
 
 function Workspace() {
   const { t, i18n } = useTranslation();
@@ -67,6 +69,7 @@ function Workspace() {
 
   const [activeTab, setActiveTab] = useState("overview");
   const tabsListRef = useRef<HTMLDivElement>(null);
+  const screenshotsDir = useCapturePathsStore((s) => s.screenshotsDir);
 
   // A quick brightness blip on the segmented selector itself — chrome
   // only, never the tab content — so switching instruments reads as a
@@ -93,24 +96,22 @@ function Workspace() {
   async function handleCapture() {
     if (!selectedDeviceId) return;
     try {
-      const base64 = await takeScreenshot(selectedDeviceId);
-      const a = document.createElement("a");
-      a.href = `data:image/png;base64,${base64}`;
-      a.download = `screenshot-${Date.now()}.png`;
-      a.click();
-      // setDataUrl(`data:image/png;base64,${base64}`)
+      // A configured default folder (Settings / ScreenOptions) skips the
+      // save dialog and writes straight there with a generated filename —
+      // same pattern as screen recording.
+      const path = screenshotsDir
+        ? await buildScreenshotPath(selectedDeviceId, screenshotsDir)
+        : await chooseScreenshotPath(selectedDeviceId, t("workspace.chooseScreenshotPath"));
+      if (!path) return; // user cancelled the save dialog
+      await saveScreenshot(selectedDeviceId, path);
+      toast.success(t("workspace.screenshotSaved", { path }));
     } catch (err) {
       toast.error(String(err));
-    } finally {
     }
   }
 
   if (!selectedDeviceId) {
-    return (
-      <div className="flex flex-1 items-center justify-center text-sm text-muted-foreground">
-        {t("workspace.selectDevice")}
-      </div>
-    );
+    return <NotDeviceSelected />;
   }
 
   async function handleDisconnect() {

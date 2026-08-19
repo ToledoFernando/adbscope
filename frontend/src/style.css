@@ -188,16 +188,20 @@
   }
 
   /* Status LED pulse — the only looping animation in the system, reserved
-     for a device/session that is genuinely live right now. */
+     for a device/session that is genuinely live right now. Keyed off
+     currentColor so the same animation reads correctly on any state color
+     (green "online", red "REC") — set the color via a text-state-* class
+     alongside it, not a background override. */
   @keyframes led-pulse {
     0%, 100% {
-      box-shadow: 0 0 0 0 color-mix(in oklch, var(--state-online) 55%, transparent);
+      box-shadow: 0 0 0 0 color-mix(in oklch, currentColor 55%, transparent);
     }
     50% {
-      box-shadow: 0 0 0 4px color-mix(in oklch, var(--state-online) 0%, transparent);
+      box-shadow: 0 0 0 4px color-mix(in oklch, currentColor 0%, transparent);
     }
   }
   .animate-led-pulse {
+    color: var(--state-online);
     animation: led-pulse 2s ease-in-out infinite;
   }
 

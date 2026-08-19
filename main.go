@@ -39,7 +39,7 @@ func main() {
 		Title:     appName,
 		Width:     windowWidth,
 		Height:    windowHeight,
-		Frameless: true,
+		Frameless: false,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},

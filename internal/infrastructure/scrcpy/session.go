@@ -12,12 +12,19 @@ import (
 // scrcpy window the user opened by hand.
 const windowTitlePrefix = "adbscope-screen-"
 
+// gracefulStopTimeout bounds how long Stop() waits for scrcpy to exit on
+// its own after a WM_CLOSE before falling back to a hard kill. A plain
+// mirror session exits almost immediately; a session with an active
+// --record needs a moment to flush and close its output file.
+const gracefulStopTimeout = 4 * time.Second
+
 // Session is a running scrcpy process mirroring one device's screen,
 // embedded into our own window instead of opening its own — scrcpy has no
 // "library mode", so this drives the real binary and reparents its native
 // window via Win32 APIs (see window_windows.go).
 type Session struct {
-	DeviceID string
+	DeviceID   string
+	RecordPath string // "" when this session isn't recording
 
 	cmd   *exec.Cmd
 	title string
@@ -28,10 +35,14 @@ type Session struct {
 // serial) and waits for its window to appear, ready to be embedded. audio
 // mirrors the device's audio output through scrcpy (Android 11+ only);
 // it's a launch-time flag for scrcpy, not something togglable on a
-// running session — changing it means stopping and starting again. binDir
-// is where the app's embedded binaries were extracted to (see
-// locateScrcpy) — pass "" to skip straight to the fallback locations.
-func Start(ctx context.Context, deviceID, serial string, audio bool, binDir string) (*Session, error) {
+// running session — changing it means stopping and starting again.
+// recordPath, when non-empty, also saves the mirrored video (and audio,
+// if enabled) to that file — same launch-time-only caveat as audio; the
+// file is only finalized cleanly if the session is later torn down via
+// Stop's graceful close, not a hard kill. binDir is where the app's
+// embedded binaries were extracted to (see locateScrcpy) — pass "" to
+// skip straight to the fallback locations.
+func Start(ctx context.Context, deviceID, serial string, audio bool, recordPath string, binDir string) (*Session, error) {
 	path, err := locateScrcpy(binDir)
 	if err != nil {
 		return nil, fmt.Errorf("scrcpy not found: %w", err)
@@ -64,6 +75,9 @@ func Start(ctx context.Context, deviceID, serial string, audio bool, binDir stri
 	if !audio {
 		args = append(args, "--no-audio")
 	}
+	if recordPath != "" {
+		args = append(args, "--record="+recordPath)
+	}
 	cmd := exec.CommandContext(ctx, path, args...)
 	cmd.SysProcAttr = noWindowAttr()
 
@@ -90,7 +104,7 @@ func Start(ctx context.Context, deviceID, serial string, audio bool, binDir stri
 	// expose one to check against).
 	time.Sleep(400 * time.Millisecond)
 
-	return &Session{DeviceID: deviceID, cmd: cmd, title: title, hwnd: hwnd}, nil
+	return &Session{DeviceID: deviceID, RecordPath: recordPath, cmd: cmd, title: title, hwnd: hwnd}, nil
 }
 
 // EmbedInMainWindow reparents the scrcpy window into ADBScope's own
@@ -120,14 +134,32 @@ func (s *Session) SetVisible(visible bool) {
 
 // Stop terminates the scrcpy process and waits for it to fully exit
 // before returning — a subsequent Start() must never race a still-dying
-// previous process.
+// previous process. It asks nicely first (WM_CLOSE, see closeWindow) so a
+// --record in progress gets to finalize its output file, only falling
+// back to a hard kill if the process doesn't exit within
+// gracefulStopTimeout — a plain mirror session normally exits almost
+// immediately either way.
 func (s *Session) Stop() error {
 	if s.cmd == nil || s.cmd.Process == nil {
 		return nil
 	}
-	if err := s.cmd.Process.Kill(); err != nil {
-		return err
+
+	done := make(chan struct{})
+	go func() {
+		_ = s.cmd.Wait()
+		close(done)
+	}()
+
+	closeWindow(s.hwnd)
+
+	select {
+	case <-done:
+		return nil
+	case <-time.After(gracefulStopTimeout):
+		if err := s.cmd.Process.Kill(); err != nil {
+			return err
+		}
+		<-done
+		return nil
 	}
-	_ = s.cmd.Wait()
-	return nil
 }

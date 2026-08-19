@@ -8,6 +8,8 @@
   Una app de escritorio nativa para Windows para debuggear y mostrar avances de apps Android directo desde tu máquina de desarrollo — información del dispositivo, espejo de pantalla en vivo con audio, una shell interactiva real y Logcat, para múltiples dispositivos, sin abrir Android Studio.
 </p>
 
+[![Nombre alternativo](https://img.youtube.com/vi/yHKsz_DqTTs/0.jpg)](https://youtu.be/yHKsz_DqTTs)   
+
 ---
 
 ## Por qué existe
@@ -21,6 +23,7 @@ ADBScope es una sola herramienta para ese ciclo: conectá (por USB o WiFi) uno o
 - **Gestión de dispositivos** — detecta automáticamente dispositivos USB, WiFi (ADB por red, incluyendo emparejamiento por código en Android 11+) y emuladores; conectar/desconectar, renombrar con un alias local, y eliminar un dispositivo de la lista sin que un polling de fondo lo vuelva a traer.
 - **Información del dispositivo** — modelo, fabricante, versión de Android/SDK, arquitectura de CPU y lista de ABIs, build fingerprint, resolución/densidad, batería (nivel, salud, voltaje, temperatura) y almacenamiento, con gráficos de dona para batería y almacenamiento.
 - **Espejo de pantalla en vivo** — la pantalla del dispositivo embebida directamente en la ventana de la app (no un popup), con toggle de audio opcional y reconexión manual si el dispositivo se cae.
+- **Captura y grabación** — screenshot y grabación de video de la pantalla del dispositivo, con carpeta de destino configurable (o elegir dónde guardar cada vez).
 - **Shell interactiva** — una terminal real (no una caja de comando de una línea): colores ANSI, edición de línea, Ctrl+C, color de prompt configurable, scrollback — todo.
 - **Streaming de Logcat** — tail en vivo con búsqueda, filtro por nivel (Verbose → Fatal), pausar/reanudar, orden con lo más reciente primero, y renderizado virtualizado para que una app ruidosa no trabe la UI.
 - **Multi-dispositivo, un foco a la vez** — cada dispositivo conectado aparece en la barra lateral al mismo tiempo; el que selecciones obtiene la sesión de pantalla/shell/logs en vivo, y cambiar o desconectar cierra limpiamente la anterior.
@@ -84,7 +87,7 @@ Los textos de la UI viven en `frontend/src/i18n/locales/{es,en}.json` con las mi
 ## Estructura del proyecto
 
 ```
-adbview/
+adbscope/
 ├── main.go, app.go          # Punto de entrada de Wails + métodos expuestos del struct App
 ├── internal/
 │   ├── domain/               # Device, DeviceInfo, LogEntry, errores de dominio — sin saber de ADB
@@ -123,3 +126,22 @@ El resultado del build es un único archivo: `build/bin/ADBScope.exe`. No hay na
 - **Solo Windows.** El embebido de pantalla usa APIs Win32 directamente, y la shell usa ConPTY de Windows — ambas cosas específicas de la plataforma a propósito, todavía no abstraídas detrás de una interfaz para otros sistemas operativos.
 - **Un solo dispositivo activo a la vez.** La detección y la barra lateral son multi-dispositivo; las sesiones en vivo de pantalla/shell/logcat no.
 - **El resize de la shell remota no se propaga.** La terminal local se reacomoda, pero no se le avisa el nuevo tamaño a la PTY remota, así que apps TUI a pantalla completa (`vim`, `htop`) pueden renderizar asumiendo las dimensiones equivocadas.
+
+## Contribuciones
+
+Issues y PRs son bienvenidos. Para cambios grandes, abrí un issue primero para discutir el enfoque antes de meterte a escribir código.
+
+## Licencia
+
+[MIT](LICENSE) — © 2026 ToledoFernando.
+
+### Licencias de terceros
+
+El binario embebe herramientas de terceros (`scrcpy/`, ver [Arquitectura](#arquitectura)), cada una bajo su propia licencia:
+
+- **[scrcpy](https://github.com/Genymobile/scrcpy)** — Apache License 2.0.
+- **adb** (Android Debug Bridge, parte del Android Open Source Project) — Apache License 2.0.
+- **[SDL3](https://www.libsdl.org/)** — Zlib License.
+- **FFmpeg** (`avcodec`/`avformat`/`avutil`/`swresample`) — LGPL. scrcpy distribuye builds de FFmpeg sin componentes GPL específicamente para poder redistribuirse bajo Apache 2.0; si reemplazás estos binarios por otro build de FFmpeg, verificá su licencia antes de redistribuir.
+
+Ninguna de estas licencias impone copyleft sobre este repositorio, pero si redistribuís el `.exe` compilado seguís obligado a cumplir sus términos (incluir avisos de copyright, etc.) — no vienen los archivos de licencia de terceros embebidos en `scrcpy/` todavía; agregalos ahí si vas a distribuir binarios públicamente.

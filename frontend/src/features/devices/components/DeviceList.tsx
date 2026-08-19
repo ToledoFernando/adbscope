@@ -2,6 +2,7 @@ import {useTranslation} from 'react-i18next'
 import {ScrollArea} from '@/components/ui/scroll-area'
 import {useDeviceStore} from '../store'
 import {DeviceListItem} from './DeviceListItem'
+import DeviceListEmpty from './DeviceListEmpty'
 
 export function DeviceList() {
   const devices = useDeviceStore((s) => s.devices)
@@ -15,7 +16,7 @@ export function DeviceList() {
   }
 
   if (devices?.length === 0) {
-    return <p className="px-3 py-2 text-sm text-muted-foreground">{t('deviceList.empty')}</p>
+    return <DeviceListEmpty />
   }
 
   return (

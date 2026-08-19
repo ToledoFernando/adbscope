@@ -100,7 +100,18 @@ if (import.meta.env.DEV && typeof (window as any).runtime === "undefined") {
     GetDevices: [fakeDevice],
     GetDeviceInfo: fakeDeviceInfo,
     GetDeviceOverview: fakeDeviceInfo,
+    ChooseRecordingPath: "C:\\Users\\dev\\Videos\\adbscope-pixel-8-pro-20260818-120000.mp4",
+    ChooseScreenshotPath: "C:\\Users\\dev\\Pictures\\adbscope-pixel-8-pro-20260818-120000.png",
+    ChooseDirectory: "C:\\Users\\dev\\Videos\\ADBScope",
     TakeScreenshot: "",
+  }
+
+  // Path builders take the chosen dir as an arg — stub them for real
+  // instead of a static string, so the "default folder configured, skip
+  // the dialog" path is actually exercisable in browser preview too.
+  const dynamicHandlers: Record<string, (...args: unknown[]) => unknown> = {
+    BuildRecordingPath: (_deviceId, dir) => `${dir}\\adbscope-pixel-8-pro-20260818-120000.mp4`,
+    BuildScreenshotPath: (_deviceId, dir) => `${dir}\\adbscope-pixel-8-pro-20260818-120000.png`,
   }
 
   ;(window as any).go = {
@@ -110,7 +121,8 @@ if (import.meta.env.DEV && typeof (window as any).runtime === "undefined") {
         {
           get:
             (_target, method: string) =>
-            (..._args: unknown[]) => {
+            (...args: unknown[]) => {
+              if (method in dynamicHandlers) return Promise.resolve(dynamicHandlers[method](...args))
               if (method in stubbedResults) return Promise.resolve(stubbedResults[method])
               return Promise.resolve(undefined)
             },

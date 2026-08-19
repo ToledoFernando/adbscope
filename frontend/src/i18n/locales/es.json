@@ -17,7 +17,13 @@
       "system": "Sistema",
       "light": "Claro",
       "dark": "Oscuro"
-    }
+    },
+    "captures": "Capturas",
+    "recordingsFolder": "Carpeta de grabaciones",
+    "screenshotsFolder": "Carpeta de capturas",
+    "askEveryTime": "Preguntar cada vez",
+    "chooseFolder": "Elegir carpeta…",
+    "clearFolder": "Quitar carpeta"
   },
   "appShell": {
     "devices": "Dispositivos"
@@ -25,6 +31,30 @@
   "deviceList": {
     "loading": "Cargando dispositivos…",
     "empty": "No hay dispositivos conectados"
+  },
+  "connectHelp": {
+    "trigger": "¿Cómo conecto un dispositivo?",
+    "title": "Activar depuración en tu Android",
+    "description": "Antes de conectar, tenés que habilitar Opciones de desarrollador y la depuración en el celular.",
+    "usb": {
+      "steps": [
+        "Andá a Ajustes → Acerca del teléfono, y tocá 7 veces sobre \"Número de compilación\" hasta que aparezca \"¡Ya sos desarrollador!\".",
+        "Volvé a Ajustes → Sistema → Opciones de desarrollador (en algunos fabricantes está directo en Ajustes, sin pasar por Sistema).",
+        "Activá \"Depuración USB\".",
+        "Conectá el celular a la PC con un cable USB.",
+        "Aparece un diálogo \"¿Permitir depuración USB?\" en el celular — aceptalo (marcá \"confiar siempre en esta computadora\" para no repetirlo cada vez)."
+      ]
+    },
+    "wifi": {
+      "steps": [
+        "Habilitá Opciones de desarrollador (ver pestaña USB) y activá \"Depuración inalámbrica\".",
+        "Tocá \"Depuración inalámbrica\" → \"Emparejar dispositivo con código de emparejamiento\".",
+        "El celular muestra una IP, un puerto de emparejamiento y un código de 6 dígitos.",
+        "En ADBScope, abrí \"+ Conectar\" → pestaña WiFi → \"Emparejar\", y cargá esos tres datos.",
+        "Una vez emparejado, usá la IP y el puerto que aparece en la pantalla principal de \"Depuración inalámbrica\" (distinto al de emparejamiento) para conectar."
+      ],
+      "note": "El emparejamiento se hace una sola vez por red — después alcanza con conectar usando la IP y el puerto que muestra el celular."
+    }
   },
   "deviceListItem": {
     "options": "Opciones del dispositivo",
@@ -76,6 +106,8 @@
     "shell": "Terminal",
     "openConsole": "Abrir consola",
     "takeScreenshot": "Sacar captura",
+    "chooseScreenshotPath": "Guardar captura como",
+    "screenshotSaved": "Captura guardada: {{path}}",
     "reconnect": "Reconectar",
     "disconnect": "Desconectar",
     "disconnectedToast": "Desconectado — pantalla, terminal y sesión de logcat detenidas",
@@ -162,7 +194,13 @@
     "options": "Opciones de pantalla",
     "reconnect": "Reconectar",
     "audioOn": "Sonido activado",
-    "audioOff": "Sonido desactivado"
+    "audioOff": "Sonido desactivado",
+    "record": "Grabar pantalla",
+    "stopRecording": "Detener grabación",
+    "recIndicator": "REC",
+    "chooseRecordingPath": "Guardar grabación como",
+    "recordingStarted": "Grabando pantalla…",
+    "recordingStopped": "Grabación guardada: {{path}}"
   },
   "devices": {
     "lostConnection": "Se perdió la conexión con {{device}} — se detuvieron sus sesiones activas"
