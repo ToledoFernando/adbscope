@@ -70,12 +70,12 @@ function Content() {
               type="button"
               onClick={() => setTheme(value)}
               className={cn(
-                "relative flex flex-col items-center gap-2 rounded-lg border p-4 text-sm transition-colors hover:bg-accent",
-                theme === value ? "border-primary bg-accent" : "border-border",
+                "relative flex flex-col items-center gap-2 rounded-md border p-4 text-sm transition-colors hover:bg-panel-raised",
+                theme === value ? "border-state-live bg-panel-raised" : "border-hairline",
               )}
             >
               {theme === value && (
-                <Check className="absolute top-2 right-2 h-3.5 w-3.5 text-primary" />
+                <Check className="absolute top-2 right-2 h-3.5 w-3.5 text-state-live" />
               )}
               <Icon className="h-5 w-5" />
               {t(`settings.themeOptions.${value}`)}

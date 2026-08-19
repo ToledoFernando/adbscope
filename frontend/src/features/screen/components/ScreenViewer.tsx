@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import {useDeviceStore} from '@/features/devices/store'
+import {cn} from '@/lib/utils'
 import {setScreenMirrorRect, setScreenMirrorVisible, startScreenMirror, stopScreenMirror} from '../api'
 
 interface ScreenViewerProps {
@@ -139,7 +140,19 @@ export function ScreenViewer({deviceId}: ScreenViewerProps) {
 
   return (
     <div className="flex flex-1 py-8 flex-col gap-2 overflow-hidden p-6">
-      <div className="flex shrink-0 items-center justify-end">
+      <div className="flex shrink-0 items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span
+            className={cn(
+              "size-1.5 rounded-full",
+              status === "running" ? "bg-state-online animate-led-pulse" : status === "error" ? "bg-state-fault" : "bg-state-warning",
+            )}
+            aria-hidden
+          />
+          <span className="font-mono text-[10px] font-medium tracking-[0.08em] text-ink-muted uppercase">
+            {t("screenViewer.monitorLabel")}
+          </span>
+        </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon-sm" aria-label={t('screenViewer.options')}>
@@ -161,9 +174,9 @@ export function ScreenViewer({deviceId}: ScreenViewerProps) {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      {status === 'starting' && <p className="text-sm text-muted-foreground">{t('screenViewer.starting')}</p>}
-      {status === 'error' && <p className="text-sm text-destructive">{error ?? t('screenViewer.error')}</p>}
-      <div ref={containerRef} className="flex-1 -z-10 min-h-0 h-full bg-gray-100 dark:bg-[#0a0a0a] rounded-md border border-border"/>
+      {status === 'starting' && <p className="font-mono text-xs text-ink-muted">{t('screenViewer.starting')}</p>}
+      {status === 'error' && <p className="font-mono text-xs text-state-fault">{error ?? t('screenViewer.error')}</p>}
+      <div ref={containerRef} className="flex-1 -z-10 min-h-0 h-full rounded-md border border-hairline-strong bg-panel-sunken"/>
     </div>
   )
 }

@@ -1,12 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { GetDeviceOverview } from "@/../wailsjs/go/main/App";
 import type { domain } from "@/../wailsjs/go/models";
-import { ScreenshotPanel } from "./ScreenshotPanel";
 import ChartPie from "@/components/ui/PieChart";
 import { cn } from "@/lib/utils";
 import { useDeviceAliasStore } from "../aliasStore";
@@ -46,17 +47,15 @@ function formatUptime(seconds: number) {
 const STATE_CONFIG: Record<string, { labelKey: string; className: string }> = {
   online: {
     labelKey: "overview.state.online",
-    className:
-      "bg-green-500/15 text-green-600 border-green-500/20 dark:text-green-400",
+    className: "border-state-online/30 bg-state-online/10 text-state-online",
   },
   offline: {
     labelKey: "overview.state.offline",
-    className: "bg-muted text-muted-foreground border-transparent",
+    className: "border-hairline bg-transparent text-ink-faint",
   },
   unauthorized: {
     labelKey: "overview.state.unauthorized",
-    className:
-      "bg-amber-500/15 text-amber-600 border-amber-500/20 dark:text-amber-400",
+    className: "border-state-warning/30 bg-state-warning/10 text-state-warning",
   },
 };
 
@@ -129,24 +128,24 @@ export function DeviceOverview({ deviceId }: DeviceOverviewProps) {
   return (
     <div className="flex flex-col gap-4 overflow-y-auto p-6">
       <div className="flex items-center gap-3">
-        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-muted">
-          <Smartphone className="h-6 w-6" />
+        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-hairline bg-panel-raised">
+          <Smartphone className="h-5 w-5 text-ink-muted" />
         </div>
         <div className="flex min-w-0 flex-col gap-0.5">
           <div className="flex flex-wrap items-center gap-2">
-            <h1 className="truncate text-lg font-semibold">
+            <h1 className="truncate text-base font-semibold text-foreground">
               {alias || info.Model || info.Serial}
             </h1>
             <Badge variant="outline" className={cn("gap-1", stateConfig.className)}>
-              <CircleDot className="h-2.5 w-2.5 fill-current" />
+              <CircleDot className="h-2 w-2 fill-current" />
               {t(stateConfig.labelKey)}
             </Badge>
-            <Badge variant="outline" className="gap-1 text-muted-foreground">
+            <Badge variant="outline" className="gap-1 text-ink-muted">
               <TransportIcon className="h-3 w-3" />
               {t(`deviceListItem.transport.${info.Transport}`, info.Transport)}
             </Badge>
           </div>
-          <p className="truncate text-sm text-muted-foreground">
+          <p className="truncate font-mono text-xs text-ink-faint">
             {info.Manufacturer || "—"}
           </p>
         </div>
@@ -270,8 +269,12 @@ export function DeviceOverview({ deviceId }: DeviceOverviewProps) {
               </div>
             }
             data={[
-              { label: t("overview.pieLabels.charge"), value: info.BatteryLevel, fill: "#000" },
-              { label: t("overview.pieLabels.remaining"), value: 100 - info.BatteryLevel, },
+              {
+                label: t("overview.pieLabels.charge"),
+                value: info.BatteryLevel,
+                fill: info.BatteryLevel <= 15 ? "var(--state-fault)" : "var(--state-online)",
+              },
+              { label: t("overview.pieLabels.remaining"), value: 100 - info.BatteryLevel, fill: "var(--panel-sunken)" },
             ]}
           >
             <Label
@@ -287,7 +290,7 @@ export function DeviceOverview({ deviceId }: DeviceOverviewProps) {
                       <tspan
                         x={viewBox.cx}
                         y={viewBox.cy}
-                        className="fill-foreground text-2xl font-bold"
+                        className="fill-foreground font-mono text-2xl font-semibold"
                       >
                         {info.BatteryLevel}%
                       </tspan>
@@ -311,11 +314,12 @@ export function DeviceOverview({ deviceId }: DeviceOverviewProps) {
               {
                 label: t("overview.pieLabels.used"),
                 value: info.StorageUsedBytes,
-                fill: "#000",
+                fill: "var(--state-live)",
               },
               {
                 label: t("overview.pieLabels.free"),
                 value: info.StorageTotalBytes - info.StorageUsedBytes,
+                fill: "var(--panel-sunken)",
               },
             ]}
           >
@@ -332,14 +336,14 @@ export function DeviceOverview({ deviceId }: DeviceOverviewProps) {
                       <tspan
                         x={viewBox.cx}
                         y={viewBox.cy}
-                        className="fill-foreground text-xl font-bold"
+                        className="fill-foreground font-mono text-xl font-semibold"
                       >
                         {formatBytes(info.StorageUsedBytes)}
                       </tspan>
                       <tspan
                         x={viewBox.cx}
                         y={(viewBox.cy || 0) + 24}
-                        className="fill-muted-foreground text-xs"
+                        className="fill-muted-foreground font-mono text-xs"
                       >
                         {t("overview.ofTotal", { total: formatBytes(info.StorageTotalBytes) })}
                       </tspan>
@@ -369,16 +373,40 @@ function StatTile({
   sub?: string;
   progress?: number;
 }) {
+  const readoutRef = useRef<HTMLSpanElement>(null);
+
+  // Progress tiles (battery/storage) read out a live percentage — count it
+  // up like an instrument settling on a reading instead of snapping to the
+  // new value, so a refreshed overview feels like a taken measurement.
+  useGSAP(
+    () => {
+      if (progress === undefined || !readoutRef.current) return;
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      const target = { n: 0 };
+      gsap.to(target, {
+        n: progress,
+        duration: 0.6,
+        ease: "power2.out",
+        onUpdate: () => {
+          if (readoutRef.current) readoutRef.current.textContent = `${Math.round(target.n)}%`;
+        },
+      });
+    },
+    { dependencies: [progress], scope: readoutRef },
+  );
+
   return (
-    <Card className="gap-2 py-4">
-      <CardContent className="flex flex-col gap-1.5 px-4">
-        <div className="flex items-center gap-1.5 text-muted-foreground">
+    <Card className="gap-2 py-3">
+      <CardContent className="flex flex-col gap-1.5 px-3.5">
+        <div className="flex items-center gap-1.5 text-ink-muted">
           {icon}
-          <span className="text-xs font-medium">{label}</span>
+          <span className="text-[10px] font-medium tracking-wide uppercase">{label}</span>
         </div>
-        <span className="text-2xl font-semibold tabular-nums">{value}</span>
+        <span ref={readoutRef} className="font-mono text-2xl font-semibold text-foreground tabular-nums">
+          {value}
+        </span>
         {progress !== undefined && <Progress value={progress} className="h-1.5" />}
-        {sub && <span className="truncate text-xs text-muted-foreground">{sub}</span>}
+        {sub && <span className="truncate font-mono text-[11px] text-ink-faint">{sub}</span>}
       </CardContent>
     </Card>
   );
@@ -387,7 +415,7 @@ function StatTile({
 function InfoSection({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-3">
-      <h3 className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+      <h3 className="text-[10px] font-medium tracking-[0.06em] text-ink-muted uppercase">
         {title}
       </h3>
       <div className="grid grid-cols-2 gap-x-6 gap-y-3">{children}</div>
@@ -406,9 +434,9 @@ function InfoRow({
 }) {
   return (
     <div className="flex min-w-0 flex-col gap-0.5">
-      <span className="text-xs text-muted-foreground">{label}</span>
+      <span className="text-[10px] font-medium tracking-wide text-ink-muted uppercase">{label}</span>
       <span
-        className={cn("truncate text-sm font-medium", mono && "font-mono tabular-nums")}
+        className={cn("truncate text-sm font-medium text-foreground", mono && "font-mono text-[13px] tabular-nums")}
         title={value}
       >
         {value}

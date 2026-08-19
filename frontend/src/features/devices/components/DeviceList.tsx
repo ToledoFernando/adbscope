@@ -20,7 +20,7 @@ export function DeviceList() {
 
   return (
     <div className="h-full w-full overflow-hidden flex-1">
-      <div className="flex flex-col w-full flex-1 gap-1 p-2">
+      <div className="flex flex-col w-full flex-1">
         {devices?.map((device) => (
           <DeviceListItem
             key={device.ID}

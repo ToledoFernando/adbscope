@@ -1,16 +1,17 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   Check,
   Languages,
   PowerOff,
   RefreshCcw,
   ScanSquare,
-  ScreenShare,
   Settings,
   Terminal,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
 import { AppShell } from "@/components/layout/AppShell";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -64,6 +65,26 @@ function Workspace() {
   // sessions running.
   const [overviewKey, setOverviewKey] = useState(0);
 
+  const [activeTab, setActiveTab] = useState("overview");
+  const tabsListRef = useRef<HTMLDivElement>(null);
+
+  // A quick brightness blip on the segmented selector itself — chrome
+  // only, never the tab content — so switching instruments reads as a
+  // deliberate channel change instead of an instant CSS toggle. Kept off
+  // the content panes entirely: those geometry-drive the embedded native
+  // scrcpy window (see ScreenViewer), and animating them is not safe.
+  useGSAP(
+    () => {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      gsap.fromTo(
+        tabsListRef.current,
+        { filter: "brightness(1.6)" },
+        { filter: "brightness(1)", duration: 0.25, ease: "power2.out" },
+      );
+    },
+    { dependencies: [activeTab], scope: tabsListRef },
+  );
+
   function handleReconnect() {
     setOverviewKey((k) => k + 1);
     toast.success(t("workspace.refreshingToast"));
@@ -105,22 +126,23 @@ function Workspace() {
     <Tabs
       key={`${selectedDeviceId}-${generation}`}
       defaultValue="overview"
-      onValueChange={(value) =>
+      onValueChange={(value) => {
         setVisitedTabs((prev) =>
           prev.has(value) ? prev : new Set(prev).add(value),
         )
-      }
+        setActiveTab(value)
+      }}
       className="flex flex-1 h-full flex-col overflow-hidden gap-0"
     >
       <div className="mx-6 mt-4 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <TabsList className="w-fit">
+          <TabsList ref={tabsListRef} className="w-fit">
             <TabsTrigger value="overview">{t("workspace.overview")}</TabsTrigger>
             <TabsTrigger value="screen">{t("workspace.screen")}</TabsTrigger>
             <TabsTrigger value="shell">{t("workspace.shell")}</TabsTrigger>
           </TabsList>
           <Tooltip>
-            <TooltipTrigger>
+            <TooltipTrigger asChild>
               <Button
                 onClick={() => closeLogcat(!isOpenLogCat)}
                 size={"icon-lg"}
@@ -137,7 +159,7 @@ function Workspace() {
         </div>
 
         <DropdownMenu>
-          <DropdownMenuTrigger>
+          <DropdownMenuTrigger asChild>
             <Button variant="ghost" size={"icon-lg"}>
               <Settings />
             </Button>

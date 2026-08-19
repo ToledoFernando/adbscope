@@ -73,9 +73,15 @@ export function ShellTerminal({deviceId}: ShellTerminalProps) {
 
     const term = new Terminal({
       convertEol: true,
-      fontFamily: 'Menlo, Consolas, monospace',
+      fontFamily: "'JetBrains Mono Variable', 'Cascadia Mono', Consolas, monospace",
       fontSize: 13,
-      theme: {background: '#0a0a0a', foreground: '#e5e5e5', cursor: '#e5e5e5'},
+      theme: {
+        background: '#0d1116',
+        foreground: '#e8ecf1',
+        cursor: '#22d3ee',
+        cursorAccent: '#0d1116',
+        selectionBackground: 'rgba(34, 211, 238, 0.25)',
+      },
     })
     const fitAddon = new FitAddon()
     term.loadAddon(fitAddon)
@@ -130,7 +136,10 @@ export function ShellTerminal({deviceId}: ShellTerminalProps) {
 
   return (
     <div className="flex h-full flex-col gap-2 p-12 pb-4 px-4">
-      <div className="flex items-center justify-end">
+      <div className="flex items-center justify-between">
+        <span className="font-mono text-[10px] font-medium tracking-[0.08em] text-ink-muted uppercase">
+          {t('shell.consoleLabel')}
+        </span>
         <DropdownMenu>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -158,7 +167,7 @@ export function ShellTerminal({deviceId}: ShellTerminalProps) {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="min-h-0 flex-1 rounded-md bg-[#0a0a0a] dark:border dark:border-zinc-700 p-4">
+      <div className="min-h-0 flex-1 rounded-md border border-hairline-strong bg-panel-sunken p-3">
         <div ref={containerRef} className="h-full overflow-hidden" />
       </div>
     </div>

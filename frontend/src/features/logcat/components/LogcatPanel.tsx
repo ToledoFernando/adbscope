@@ -13,6 +13,15 @@ import { ResizableHandle, ResizablePanel } from '@/components/ui/resizable'
 
 const LEVELS: LogLevel[] = ['V', 'D', 'I', 'W', 'E', 'F']
 
+const LEVEL_GLYPH_COLORS: Record<LogLevel, string> = {
+  V: 'text-ink-faint',
+  D: 'text-ink-muted',
+  I: 'text-state-online',
+  W: 'text-state-warning',
+  E: 'text-state-fault',
+  F: 'text-state-fault',
+}
+
 // Collapsible bottom panel, VS Code terminal-style: closed by default,
 // only connects the logcat stream while open (useLogcatStream tears the
 // stream down on close/unmount), so an idle device isn't logged forever.
@@ -54,19 +63,19 @@ export function LogcatPanel() {
   return (
     <>
     <ResizableHandle withHandle />
-    <ResizablePanel maxSize={"50%"} minSize={30} className={cn('flex flex-col border-t border-border', isOpen ? 'h-full' : 'shrink-0')}>
+    <ResizablePanel maxSize={"50%"} minSize={30} className={cn('flex flex-col border-t border-hairline bg-panel', isOpen ? 'h-full' : 'shrink-0')}>
       <button
         onClick={() => setOpen(!isOpen)}
-        className="flex h-8 shrink-0 items-center gap-2 px-4 text-xs text-muted-foreground hover:bg-accent"
+        className="flex h-8 shrink-0 items-center gap-2 px-4 font-mono text-[11px] tracking-wide text-ink-muted uppercase hover:bg-panel-raised"
       >
         {isOpen ? <ChevronDown className="size-3.5"/> : <ChevronUp className="size-3.5"/>}
         <span className="font-medium">{t('logcat.title')}</span>
-        {!selectedDeviceId && <span>{t('logcat.selectDevice')}</span>}
+        {!selectedDeviceId && <span className="normal-case">{t('logcat.selectDevice')}</span>}
       </button>
 
       {isOpen && (
-        <div className="flex flex-1 flex-col overflow-hidden border-t border-border">
-          <div className="flex shrink-0 items-center gap-2 px-2 py-1.5">
+        <div className="flex flex-1 flex-col overflow-hidden border-t border-hairline bg-panel-sunken">
+          <div className="flex shrink-0 items-center gap-2 border-b border-hairline bg-panel px-2 py-1.5">
             <Input
               placeholder={t('logcat.search')}
               value={search}
@@ -79,8 +88,13 @@ export function LogcatPanel() {
                   <TooltipTrigger asChild>
                     <Button
                       size="icon-xs"
-                      variant={levelFilter === level ? 'secondary' : 'ghost'}
+                      variant="ghost"
                       onClick={() => setLevelFilter(levelFilter === level ? null : level)}
+                      className={cn(
+                        'font-mono',
+                        LEVEL_GLYPH_COLORS[level],
+                        levelFilter === level && 'border border-hairline-strong bg-panel-raised',
+                      )}
                     >
                       {level}
                     </Button>

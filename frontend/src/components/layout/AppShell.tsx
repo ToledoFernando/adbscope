@@ -20,26 +20,28 @@ export function AppShell({children}: AppShellProps) {
   const {t} = useTranslation();
 
   return (
-    <div className="flex h-screen w-screen flex-col overflow-hidden text-foreground">
+    <div className="flex h-screen w-screen flex-col overflow-hidden bg-void text-foreground">
       <TitleBar/>
       <ResizablePanelGroup className="flex min-h-0 flex-1 overflow-hidden">
       <ResizablePanel
-        className="flex shrink-0 flex-col border-r border-border"
+        className="flex shrink-0 flex-col border-r border-hairline bg-panel"
         minSize={"5%"}
         maxSize={"20%"}
       >
-        <div className="flex h-12 shrink-0 items-center border-b border-border px-4">
-          <span className="text-sm font-semibold">{t("appShell.devices")}</span>
+        <div className="flex h-9 shrink-0 items-center border-b border-hairline px-3">
+          <span className="font-mono text-[10px] font-medium tracking-[0.08em] text-ink-muted uppercase">
+            {t("appShell.devices")}
+          </span>
         </div>
         <div className="flex-1 overflow-hidden">
           <DeviceList/>
         </div>
-        <div className="border-t border-border p-2">
+        <div className="border-t border-hairline p-2">
           <ConnectDeviceDialog/>
         </div>
       </ResizablePanel>
       <ResizableHandle withHandle/>
-      <ResizablePanel>
+      <ResizablePanel className="bg-void">
           <ResizablePanelGroup orientation="vertical" className="flex flex-1 flex-col overflow-hidden">
             <ResizablePanel className="flex flex-1 h-full flex-col overflow-hidden">
                 {children}

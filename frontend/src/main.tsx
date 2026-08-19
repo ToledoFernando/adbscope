@@ -1,6 +1,7 @@
 import {createRoot} from 'react-dom/client'
 import {HashRouter} from 'react-router-dom'
 import {Toaster} from 'sonner'
+import './lib/wailsBrowserShim'
 import './style.css'
 import './i18n'
 import './features/Settings/store'
@@ -21,7 +22,7 @@ root.render(
 
         <HashRouter>
             <App/>
-            <Toaster richColors position="top-right"/>
+            <Toaster position="top-right"/>
         </HashRouter>
         </TooltipProvider>
     </StrictMode>
