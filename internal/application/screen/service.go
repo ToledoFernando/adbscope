@@ -32,7 +32,8 @@ func NewService(client adb.Client, binDir string) *Service {
 
 // Start mirrors deviceID's screen, embedded into ADBScope's own window.
 // audio mirrors the device's audio output too (Android 11+ only).
-func (s *Service) Start(ctx context.Context, deviceID, serial string, audio bool) error {
+// recordPath, when non-empty, also saves the session to that file.
+func (s *Service) Start(ctx context.Context, deviceID, serial string, audio bool, recordPath string) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -49,7 +50,7 @@ func (s *Service) Start(ctx context.Context, deviceID, serial string, audio bool
 	// no-op when there's nothing stale to remove.
 	_, _ = s.client.Execute(ctx, "-s", serial, "forward", "--remove-all")
 
-	session, err := scrcpy.Start(ctx, deviceID, serial, audio, s.binDir)
+	session, err := scrcpy.Start(ctx, deviceID, serial, audio, recordPath, s.binDir)
 	if err != nil {
 		return fmt.Errorf("%w: %s", domain.ErrScreenStreamFailed, err)
 	}

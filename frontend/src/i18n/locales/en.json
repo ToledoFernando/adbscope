@@ -17,7 +17,13 @@
       "system": "System",
       "light": "Light",
       "dark": "Dark"
-    }
+    },
+    "captures": "Captures",
+    "recordingsFolder": "Recordings folder",
+    "screenshotsFolder": "Screenshots folder",
+    "askEveryTime": "Ask every time",
+    "chooseFolder": "Choose folder…",
+    "clearFolder": "Clear folder"
   },
   "appShell": {
     "devices": "Devices"
@@ -25,6 +31,30 @@
   "deviceList": {
     "loading": "Loading devices…",
     "empty": "No devices connected"
+  },
+  "connectHelp": {
+    "trigger": "How do I connect a device?",
+    "title": "Enable debugging on your Android",
+    "description": "Before connecting, you need to enable Developer Options and debugging on the phone.",
+    "usb": {
+      "steps": [
+        "Go to Settings → About phone, and tap \"Build number\" 7 times until you see \"You are now a developer!\".",
+        "Go back to Settings → System → Developer options (on some manufacturers it's directly under Settings, not under System).",
+        "Turn on \"USB debugging\".",
+        "Connect the phone to your PC with a USB cable.",
+        "A \"Allow USB debugging?\" dialog appears on the phone — accept it (check \"always allow from this computer\" so it doesn't ask again)."
+      ]
+    },
+    "wifi": {
+      "steps": [
+        "Enable Developer options (see the USB tab) and turn on \"Wireless debugging\".",
+        "Tap \"Wireless debugging\" → \"Pair device with pairing code\".",
+        "The phone shows an IP address, a pairing port, and a 6-digit code.",
+        "In ADBScope, open \"+ Connect\" → WiFi tab → \"Pair\", and enter those three values.",
+        "Once paired, use the IP and port shown on the main \"Wireless debugging\" screen (different from the pairing port) to connect."
+      ],
+      "note": "Pairing only happens once per network — after that, just connect using the IP and port shown on the phone."
+    }
   },
   "deviceListItem": {
     "options": "Device options",
@@ -76,6 +106,8 @@
     "shell": "Shell",
     "openConsole": "Open console",
     "takeScreenshot": "Take screenshot",
+    "chooseScreenshotPath": "Save screenshot as",
+    "screenshotSaved": "Screenshot saved: {{path}}",
     "reconnect": "Reconnect",
     "disconnect": "Disconnect",
     "disconnectedToast": "Disconnected — screen, shell and logcat sessions stopped",
@@ -162,7 +194,13 @@
     "options": "Screen options",
     "reconnect": "Reconnect",
     "audioOn": "Audio on",
-    "audioOff": "Audio off"
+    "audioOff": "Audio off",
+    "record": "Record screen",
+    "stopRecording": "Stop recording",
+    "recIndicator": "REC",
+    "chooseRecordingPath": "Save recording as",
+    "recordingStarted": "Recording screen…",
+    "recordingStopped": "Recording saved: {{path}}"
   },
   "devices": {
     "lostConnection": "Lost connection to {{device}} — its active sessions were stopped"

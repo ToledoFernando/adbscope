@@ -19,7 +19,6 @@ const root = createRoot(container!)
 root.render(
     <StrictMode>
         <TooltipProvider>
-
         <HashRouter>
             <App/>
             <Toaster position="top-right"/>

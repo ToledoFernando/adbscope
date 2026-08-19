@@ -34,4 +34,6 @@ func killStaleWindows(prefix string) {}
 
 func hideWindow(hwnd windowHandle) {}
 
+func closeWindow(hwnd windowHandle) {}
+
 func setWindowVisible(hwnd windowHandle, visible bool) {}
